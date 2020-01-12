@@ -14,5 +14,6 @@ public class MyGameGUI {
 		gg.init(g);
 		Window test = new Window(gg);
 	}
-
+ 
+	
 }
