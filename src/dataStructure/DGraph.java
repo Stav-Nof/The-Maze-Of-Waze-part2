@@ -14,7 +14,7 @@ import utils.Point3D;
 public class DGraph implements graph, Serializable{
 
 
-	public HashMap <Integer,node_data> vertices;
+	private HashMap <Integer,node_data> vertices;
 	private HashMap <Integer,HashMap<Integer,edge_data>> edges;
 	private int verticeCounter;
 	private int edgesCounter;
@@ -38,13 +38,18 @@ public class DGraph implements graph, Serializable{
 		DGrapgArrays temp = new DGrapgArrays(s);
 		this.vertices = new HashMap <Integer,node_data>();
 		for (int i = 0; i < temp.Nodes.length; i++) {
-			this.vertices.put(temp.Nodes[i].id ,new NodeData(temp.Nodes[i].id, new Point3D(temp.Nodes[i].pos)));
-			this.verticeCounter++;
+			this.addNode(new NodeData(temp.Nodes[i].id, new Point3D(temp.Nodes[i].pos)));
 		}
 		for (int i = 0; i < temp.Edges.length; i++) {
 			this.connect(temp.Edges[i].src, temp.Edges[i].dest, temp.Edges[i].w);
-			this.edgesCounter++;
 		}
+		
+		
+		
+		
+
+		
+		
 	}
 
 
@@ -106,7 +111,7 @@ public class DGraph implements graph, Serializable{
 	 * 
 	 */
 	@Override
-	public void addNode(node_data n) throws RuntimeException {
+	public void addNode(node_data n) {
 		if (this.vertices == null) {
 			DGraph temp = new DGraph();
 			this.edges = temp.edges;

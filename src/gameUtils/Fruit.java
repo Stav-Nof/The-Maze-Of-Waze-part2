@@ -22,18 +22,15 @@ public class Fruit {
 		this.setPos(Pos);
 	}
 
-	public static Fruit init(String str) 
-	{	
+	public void init(String json) {	
 		Gson gson = new Gson();
-		try
-		{
-			Fruit f=gson.fromJson(str, Fruit.class);
-			return f;
-		} 
-		catch ( JsonSyntaxException  ex)
-		{
-			throw new RuntimeException("RuntimeException");
-		}
+		Fruit temp = gson.fromJson(json, Fruit.class);
+		this.value = temp.value;
+		this.type = temp.type;
+		this.pos = temp.pos;
+		this.edge = temp.edge;
+		this.points = temp.points;
+
 	}
 
 	public int getEdge() {
@@ -54,33 +51,14 @@ public class Fruit {
 
 
 	public void setPos(String pos) {
-	this.pos = pos;
+		this.pos = pos;
 	}
 
-	
+
 	public Point3D getPos() {
 		Point3D p =new Point3D(pos);
 		return p;
 	}
 
-
-
-	public static void main(String[] args)	{
-
-		game_service game  = Game_Server.getServer((int)(Math.random()*24));
-
-		Fruit f= new Fruit(5.0,-1,"35.20273974670703,32.10439601193746,0.0");
-		
-		System.out.println(f.getValue());
-		System.out.println(f.getType());
-		System.out.println(f.getPos());
-		
-		System.out.println(game);
-
-	}
-
-	//{"value":5.0,"type":-1,"pos":"35.197656770719604,32.10191878639921,0.0"}
-	// סטרינג של פוס להפוף ל3D
-	//game_service game  = Game_Server.getServer((int)(Math.random()*24));
 
 }
