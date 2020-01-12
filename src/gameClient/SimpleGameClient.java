@@ -50,7 +50,7 @@ public class SimpleGameClient {
 		int i=0;
 		while(game.isRunning()) {
 			long t = game.timeToEnd();
-			//System.out.println("roung: "+i+"  seconds to end:"+(t/1000));
+			System.out.println("roung: "+i+"  seconds to end:"+(t/1000));
 			List<String> log = game.move();
 			if(log!=null) {
 				String robot_json = log.get(0);
