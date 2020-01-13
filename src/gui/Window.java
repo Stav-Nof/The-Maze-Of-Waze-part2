@@ -2,34 +2,47 @@ package gui;
 
 import java.awt.Color;
 import java.util.Collection;
-
-import com.google.gson.Gson;
+import java.util.List;
 
 import Server.Game_Server;
 import Server.game_service;
 import dataStructure.DGraph;
 import dataStructure.edge_data;
 import dataStructure.node_data;
+import gameUtils.Fruit;
+import gameUtils.robot;
 import utils.Point3D;
 import utils.StdDraw;
+
 
 public class Window {
 	int robots;
 	DGraph g;
-	
-	
+
+
 	public Window() {
 		game_service game = Game_Server.getServer((int)(Math.random()*24));
 		String graph = game.getGraph();
 		DGraph temp = new DGraph();
 		temp.init(graph);
 		this.g = temp;
-		fuckMyLife();
-	}
-	
+		openWindow();
+		game.addRobot(0);
+		drawFruit(game.getFruits());
+		drawrobots(game.getRobots());
+		StdDraw.show();
 
-	public void fuckMyLife() {
+
+	}
+
+	private void openWindow() {
 		StdDraw.setCanvasSize(1000,500);
+		drawGraph();
+		StdDraw.enableDoubleBuffering();
+	}
+
+
+	private void drawGraph() {
 		Collection<node_data> nodes = this.g.getV();
 		double maxX = Double.NEGATIVE_INFINITY;
 		double maxY = Double.NEGATIVE_INFINITY;
@@ -62,6 +75,22 @@ public class Window {
 				double y1 = this.g.getNode(j.getDest()).getLocation().y();
 				StdDraw.line(x0, y0, x1, y1);
 			}
+		}
+	}
+
+
+	private void drawFruit(List<String> Fruit) {
+		for (String i : Fruit) {
+			Fruit temp = new Fruit(i);
+			StdDraw.picture(temp.getLocation().x(), temp.getLocation().y(), temp.getImage(), 0.0008, 0.0008);
+		}
+	}
+	
+	
+	private void drawrobots(List<String> robots) {
+		for (String i : robots) {
+			robot temp = new robot(i);
+			StdDraw.picture(temp.getLocation().x(), temp.getLocation().y(), temp.getImage(), 0.0008, 0.0008);
 		}
 	}
 }

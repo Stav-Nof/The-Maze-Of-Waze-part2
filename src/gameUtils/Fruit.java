@@ -1,64 +1,45 @@
 package gameUtils;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import Server.Game_Server;
-import Server.game_service;
 import utils.Point3D;
 
 public class Fruit {
 
-	private double value;
-	private int type;
-	private String pos;
-	private String image;
-	private int edge;
-	private int points;
+	public Point3D location;
+	public String image;
 
 
-	public Fruit (double Value, int Type, String Pos) {
-
-		this.value= Value;
-		this.type= Type;
-		this.setPos(Pos);
+	public Fruit(String json) {
+		json = json.substring(9, json.length()-1);
+		FruitTemp temp = new FruitTemp(json);
+		this.location = new Point3D(temp.pos);
+		if (temp.type == -1) {
+			this.image = "Images/down.png";
+		}
+		else {
+			this.image = "Images/up.png";
+		}
 	}
-
-	public void init(String json) {	
-		Gson gson = new Gson();
-		Fruit temp = gson.fromJson(json, Fruit.class);
-		this.value = temp.value;
-		this.type = temp.type;
-		this.pos = temp.pos;
-		this.edge = temp.edge;
-		this.points = temp.points;
-
-	}
-
-	public int getEdge() {
-		return edge;
-	}
-
-	public void setEdge(int edge) {
-		this.edge = edge;
-	}
-
-	public double getValue() {
-		return value;
-	}
-
-	public int getType() {
-		return type;
+	
+	private class FruitTemp {
+		String pos;
+		int type;
+		
+		public FruitTemp(String json) {
+			Gson gson = new Gson();
+			FruitTemp temp = gson.fromJson(json,FruitTemp.class);
+			this.pos = temp.pos;
+			this.type = temp.type;
+		}
 	}
 
 
-	public void setPos(String pos) {
-		this.pos = pos;
+
+	public Point3D getLocation() {
+		return location;
 	}
 
-
-	public Point3D getPos() {
-		Point3D p =new Point3D(pos);
-		return p;
+	public String getImage() {
+		return image;
 	}
-
-
 }
