@@ -75,6 +75,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import gameClient.MyGameGUI;
+
 /**
  *  The {@code StdDraw} class provides a basic capability for
  *  creating drawings with your programs. It uses a simple graphics model that
@@ -809,8 +811,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static double  scaleY(double y) { return height * (ymax - y) / (ymax - ymin); }
 	private static double factorX(double w) { return w * width  / Math.abs(xmax - xmin);  }
 	private static double factorY(double h) { return h * height / Math.abs(ymax - ymin);  }
-	private static double   userX(double x) { return xmin + x * (xmax - xmin) / width;    }
-	private static double   userY(double y) { return ymax - y * (ymax - ymin) / height;   }
+	public static double   userX(double x) { return xmin + x * (xmax - xmin) / width;    }
+	public static double   userY(double y) { return ymax - y * (ymax - ymin) / height;   }
 
 
 	/**
@@ -1655,11 +1657,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+		String action = e.getActionCommand();
+		if(action.equals("manual")) {
+			MyGameGUI manual = new MyGameGUI();
+			manual.manualGame();
 		}
 	}
 
@@ -1720,7 +1721,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// this body is intentionally left empty
+
 	}
 
 	/**
