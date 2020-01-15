@@ -2,16 +2,10 @@ package gameClient;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
-
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
 import com.google.gson.Gson;
 import Server.Game_Server;
 import Server.game_service;
@@ -29,12 +23,12 @@ public class MyGameGUI implements Runnable {
 	int robots;
 	GameServer GameServer;
 	int level;
-
+	int thread;
+	public String type;
 
 	public MyGameGUI() {
 		this.level = -1;
 		openWindow();
-
 	}
 
 
@@ -108,6 +102,15 @@ public class MyGameGUI implements Runnable {
 	}
 
 
+	public void drawTime() {
+		long time = this.game.timeToEnd();
+		StdDraw.setPenColor(Color.ORANGE);
+		if(this.game.isRunning())
+			StdDraw.textRight(StdDraw.xmax-0.0005, StdDraw.ymax-0.0005, "" + time/1000);
+		else StdDraw.textRight(StdDraw.xmax-0.0005, StdDraw.ymax-0.0005, "game over");
+	}
+
+
 	private void initGameServer(String s) {
 		Gson gson = new Gson();
 		MyGameGUI temp = gson.fromJson(s, MyGameGUI.class);
@@ -118,6 +121,7 @@ public class MyGameGUI implements Runnable {
 	private class GameServer {
 		int robots;
 	}
+
 
 	public void manualGame() {
 		int levelToPrint = levelSelect();
@@ -133,14 +137,42 @@ public class MyGameGUI implements Runnable {
 		this.drawFruit();
 		this.addManualRobots();
 		this.game.startGame();
-		Thread gameRun = new Thread(this);
-		gameRun.start();
+		StdDraw.enableDoubleBuffering();
 		while (this.game.isRunning()) {
-			this.startGameManual();
+			startGameManual();
+			runGame();
 		}
+		StdDraw.disableDoubleBuffering();
+		StdDraw.clear();
+		end();
 	}
-
-
+	
+	
+	public void automaticGame() {
+		int levelToPrint = levelSelect();
+		this.GameServer = new GameServer();
+		this.level = levelToPrint;
+		this.game = Game_Server.getServer(levelToPrint - 1);
+		this.initGameServer(game.toString());
+		this.robots = this.GameServer.robots;
+		game = Game_Server.getServer(this.level-1);
+		this.g = new DGraph();
+		this.g.init(this.game.getGraph());
+		this.drawGraph();
+		this.drawFruit();
+		
+		
+//		this.addManualRobots();
+//		this.game.startGame();
+//		StdDraw.enableDoubleBuffering();
+//		while (this.game.isRunning()) {
+//			startGameManual();
+//			runGame();
+//		}
+//		StdDraw.disableDoubleBuffering();
+//		StdDraw.clear();
+//		end();
+	}
 
 
 	public boolean addManualRobots() {
@@ -186,9 +218,10 @@ public class MyGameGUI implements Runnable {
 
 
 	public void startGameManual() {
-		List<String> robots = this.game.getRobots();
+		List<String> robots = this.game.move();
 		for (String i : robots) {
 			robot temp = new robot(i);
+			System.out.println(i);
 			if (temp.getDest() == -1) {
 				String robotDes = JOptionPane.showInputDialog(new JFrame(),"select a node to go to\nrobot id: " + temp.id + " corent node: " + temp.src, null);
 				int des = -1;
@@ -197,23 +230,44 @@ public class MyGameGUI implements Runnable {
 				}catch (Exception e) {
 				}
 				this.game.chooseNextEdge(temp.getId(), des);
-				this.game.move();
 			}
 		}
 	}
 
 
+	public void runGame() {
+		this.game.move();
+		StdDraw.clear();
+		drawGraph();
+		drawFruit();
+		drawrobots();
+		drawTime();
+		StdDraw.show();
+	}
+
+
+	public void end() {
+		int points = 0;
+		for (String i : this.game.getRobots()) {
+			robot temp = new robot(i);
+			points = points + temp.getPoints();
+		}
+		StdDraw.setPenColor(Color.BLUE);
+		StdDraw.textRight(((StdDraw.xmax + StdDraw.xmin) / 2), ((StdDraw.ymax + StdDraw.ymin) / 2) + 0.001, "game end");
+		StdDraw.textRight(((StdDraw.xmax + StdDraw.xmin) / 2), ((StdDraw.ymax + StdDraw.ymin) / 2), "your points: " + points);
+	}
+	
+	
+	public void addAutomaticlRobots() {
+		
+	}
+
+
+
 	@Override
 	public void run() {
-		StdDraw.enableDoubleBuffering();
-		while (this.game.isRunning()) {
-			this.game.move();
-			StdDraw.clear();
-			drawGraph();
-			drawFruit();
-			drawrobots();
-			StdDraw.show();
-		}
-		StdDraw.disableDoubleBuffering();
+		if (this.type.equals("manual")) manualGame();
+		if (this.type.equals("automatic")) automaticGame();
+
 	}
 }

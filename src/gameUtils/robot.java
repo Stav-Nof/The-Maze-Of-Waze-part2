@@ -12,6 +12,7 @@ public class robot {
 	public int dest;
 	public int id;
 	public int src;
+	public int points;
 
 	public robot(String json) {
 		json = json.substring(9, json.length()-1);
@@ -21,6 +22,7 @@ public class robot {
 		this.dest = temp.dest;
 		this.id = temp.id;
 		this.src = temp.src;
+		this.points = temp.value;
 	}
 	
 	private class RobotTemp {
@@ -28,6 +30,7 @@ public class robot {
 		int id;
 		int dest;
 		int src;
+		int value;
 		
 		public RobotTemp(String json) {
 			Gson gson = new Gson();
@@ -36,6 +39,7 @@ public class robot {
 			this.id = temp.id;
 			this.dest = temp.dest;
 			this.src = temp.src;
+			this.value = temp.value;
 		}
 	}
 
@@ -57,5 +61,8 @@ public class robot {
 	}
 	public int getSrc() {
 		return src;
+	}
+	public int getPoints() {
+		return points;
 	}
 }

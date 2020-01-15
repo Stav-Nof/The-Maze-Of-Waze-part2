@@ -599,7 +599,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static final double DEFAULT_XMAX = 1.0;
 	private static final double DEFAULT_YMIN = 0.0;
 	private static final double DEFAULT_YMAX = 1.0;
-	private static double xmin, ymin, xmax, ymax;
+	public static double xmin, ymin, xmax, ymax;
 
 	// for synchronization
 	private static Object mouseLock = new Object();
@@ -705,8 +705,8 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		frame.setContentPane(draw);
 		frame.addKeyListener(std);    // JLabel cannot get keyboard focus
 		frame.setResizable(false);
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);            // closes all windows
+		//frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);      // closes only current window
 		frame.setTitle("Standard Draw");
 		frame.setJMenuBar(createMenuBar());
 		frame.pack();
@@ -1658,10 +1658,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
-		if(action.equals("manual")) {
 			MyGameGUI manual = new MyGameGUI();
-			manual.manualGame();
-		}
+			manual.type = action;
+			Thread temp = new Thread(manual);
+			temp.start();
 	}
 
 

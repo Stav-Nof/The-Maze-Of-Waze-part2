@@ -12,8 +12,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.StringTokenizer;
 import dataStructure.DGraph;
+import dataStructure.NodeData;
 import dataStructure.edge_data;
-import dataStructure.Node;
 import dataStructure.graph;
 import dataStructure.node_data;
 import utils.Point3D;
@@ -345,7 +345,7 @@ public class Graph_Algo implements graph_algorithms, Serializable{
 		DGraph copy = new DGraph();
 		Collection<node_data> collection = this.g.getV();
 		for (node_data i : collection) {
-			Node temp = new Node(i.getKey(),new Point3D(i.getLocation()));
+			NodeData temp = new NodeData(i.getKey(),new Point3D(i.getLocation()));
 			copy.addNode(temp);
 		}
 		for (node_data i : collection) {
