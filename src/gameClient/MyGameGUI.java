@@ -6,8 +6,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
+
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import com.google.gson.Gson;
 import Server.Game_Server;
 import Server.game_service;
@@ -19,7 +23,7 @@ import gameUtils.robot;
 import utils.Point3D;
 import utils.StdDraw;
 
-public class MyGameGUI implements Runnable, MouseListener {
+public class MyGameGUI implements Runnable {
 	game_service game;
 	DGraph g;
 	int robots;
@@ -128,7 +132,12 @@ public class MyGameGUI implements Runnable, MouseListener {
 		this.drawGraph();
 		this.drawFruit();
 		this.addManualRobots();
-		this.startGameManual();
+		this.game.startGame();
+		Thread gameRun = new Thread(this);
+		gameRun.start();
+		while (this.game.isRunning()) {
+			this.startGameManual();
+		}
 	}
 
 
@@ -176,40 +185,21 @@ public class MyGameGUI implements Runnable, MouseListener {
 	}
 
 
-	public void NodePressed() {
-		//if(StdDraw.isMousePressed()) {
-			double x = StdDraw.mouseX();
-			double y = StdDraw.mouseY();
-			double epsilon = 0.001;
-			for (node_data i : this.g.getV()) {
-				if(i.getLocation().x() + epsilon > x && i.getLocation().x() - epsilon < x) {
-					if(i.getLocation().y() + epsilon > y && i.getLocation().y() - epsilon < y) {
-						System.out.println("yarin");
-					}
-
-				}
-			}
-		}
-
-	//}
-
 	public void startGameManual() {
-		this.game.startGame();
-		Thread gameRun = new Thread(this);
-		gameRun.start();
-		while(this.game.isRunning()) {
-			List<String> robots = this.game.getRobots();
-			for (String i : robots) {
-				robot temp = new robot(i);
-				if (temp.getDest() == -1) {
-
-					//this.game.chooseNextEdge(temp.getId(), Integer.parseInt(robotDes));
+		List<String> robots = this.game.getRobots();
+		for (String i : robots) {
+			robot temp = new robot(i);
+			if (temp.getDest() == -1) {
+				String robotDes = JOptionPane.showInputDialog(new JFrame(),"select a node to go to\nrobot id: " + temp.id + " corent node: " + temp.src, null);
+				int des = -1;
+				try {
+					des = Integer.parseInt(robotDes);
+				}catch (Exception e) {
 				}
+				this.game.chooseNextEdge(temp.getId(), des);
+				this.game.move();
 			}
-
-
 		}
-
 	}
 
 
@@ -223,56 +213,7 @@ public class MyGameGUI implements Runnable, MouseListener {
 			drawFruit();
 			drawrobots();
 			StdDraw.show();
-			double x = StdDraw.mouseX();
-			double y = StdDraw.mouseY();
-			System.out.println(x + ", " + y);
 		}
-	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-
-		if (this.game.isRunning()) {
-			List<String> robots = this.game.getRobots();
-			for (String i : robots) {
-				robot temp = new robot(i);
-				if (temp.getDest() == -1) {
-					System.out.println(StdDraw.userX(e.getX()));
-					System.out.println(StdDraw.userY(e.getY()));
-					//this.game.chooseNextEdge(temp.getId(), Integer.parseInt(robotDes));
-				}
-			}
-		}
-
-	}
-
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		StdDraw.disableDoubleBuffering();
 	}
 }
