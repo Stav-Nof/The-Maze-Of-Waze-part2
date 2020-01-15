@@ -2,6 +2,8 @@ package gameClient;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.JFrame;
@@ -17,7 +19,7 @@ import gameUtils.robot;
 import utils.Point3D;
 import utils.StdDraw;
 
-public class MyGameGUI implements Runnable {
+public class MyGameGUI implements Runnable, MouseListener {
 	game_service game;
 	DGraph g;
 	int robots;
@@ -41,7 +43,7 @@ public class MyGameGUI implements Runnable {
 
 
 	private void openWindow() {
-		StdDraw.setCanvasSize(1250,750);
+		StdDraw.setCanvasSize(1000, 500);
 	}
 
 
@@ -78,7 +80,7 @@ public class MyGameGUI implements Runnable {
 			StdDraw.setPenRadius();
 			Point3D Location = i.getLocation();
 			StdDraw.filledCircle(Location.x(), Location.y(), 0.0001);
-			StdDraw.setFont(new Font("arial", Font.PLAIN, 30));
+			StdDraw.setFont(new Font("arial", Font.PLAIN, 20));
 			StdDraw.text(Location.x() + 0.0002, Location.y() + 0.0002, "" + i.getKey());
 		}
 	}
@@ -116,10 +118,10 @@ public class MyGameGUI implements Runnable {
 	public void manualGame() {
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
+		this.level = levelToPrint;
 		this.game = Game_Server.getServer(levelToPrint - 1);
 		this.initGameServer(game.toString());
 		this.robots = this.GameServer.robots;
-		this.level = levelToPrint;
 		game = Game_Server.getServer(this.level-1);
 		this.g = new DGraph();
 		this.g.init(this.game.getGraph());
@@ -174,6 +176,23 @@ public class MyGameGUI implements Runnable {
 	}
 
 
+	public void NodePressed() {
+		//if(StdDraw.isMousePressed()) {
+			double x = StdDraw.mouseX();
+			double y = StdDraw.mouseY();
+			double epsilon = 0.001;
+			for (node_data i : this.g.getV()) {
+				if(i.getLocation().x() + epsilon > x && i.getLocation().x() - epsilon < x) {
+					if(i.getLocation().y() + epsilon > y && i.getLocation().y() - epsilon < y) {
+						System.out.println("yarin");
+					}
+
+				}
+			}
+		}
+
+	//}
+
 	public void startGameManual() {
 		this.game.startGame();
 		Thread gameRun = new Thread(this);
@@ -181,12 +200,10 @@ public class MyGameGUI implements Runnable {
 		while(this.game.isRunning()) {
 			List<String> robots = this.game.getRobots();
 			for (String i : robots) {
-				System.out.println(i);
 				robot temp = new robot(i);
 				if (temp.getDest() == -1) {
-					final JFrame startGameManual = new JFrame();
-					String robotDes = JOptionPane.showInputDialog(startGameManual,"enter a vertex key to send robot to\nrobot id: " + temp.getId() + ", robot current vertex: " + temp.getSrc(), null);
-					this.game.chooseNextEdge(temp.getId(), Integer.parseInt(robotDes));
+
+					//this.game.chooseNextEdge(temp.getId(), Integer.parseInt(robotDes));
 				}
 			}
 
@@ -206,6 +223,56 @@ public class MyGameGUI implements Runnable {
 			drawFruit();
 			drawrobots();
 			StdDraw.show();
+			double x = StdDraw.mouseX();
+			double y = StdDraw.mouseY();
+			System.out.println(x + ", " + y);
 		}
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+
+		if (this.game.isRunning()) {
+			List<String> robots = this.game.getRobots();
+			for (String i : robots) {
+				robot temp = new robot(i);
+				if (temp.getDest() == -1) {
+					System.out.println(StdDraw.userX(e.getX()));
+					System.out.println(StdDraw.userY(e.getY()));
+					//this.game.chooseNextEdge(temp.getId(), Integer.parseInt(robotDes));
+				}
+			}
+		}
+
+	}
+
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }
