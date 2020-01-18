@@ -8,17 +8,19 @@ public class EdgeData implements edge_data, Serializable {
 	private int dest;
 	private String info;
 	private int tag;
+	private boolean hasFruit;
 	
 /*
  * Default constructor of Edge class.
  */
-//	public Edge() {
-//		this.src = null;
-//		this.dest = null;
-//		this.weight = 0;
-//		this.info = "";
-//		this.tag = 0;
-//	}
+	public EdgeData() {
+		this.src = -1;
+		this.dest = -1;
+		this.weight = -1;
+		this.info = "";
+		this.tag = 0;
+		this.hasFruit = false;
+	}
 	
 /*
  * Constructor of an edge, receives a source node, a destination node and a weight.

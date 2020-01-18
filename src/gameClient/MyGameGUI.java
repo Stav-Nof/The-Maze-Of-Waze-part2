@@ -263,7 +263,6 @@ public class MyGameGUI implements Runnable {
 	}
 
 
-
 	@Override
 	public void run() {
 		if (this.type.equals("manual")) manualGame();
