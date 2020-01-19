@@ -189,7 +189,7 @@ public class MyGameGUI implements Runnable {
  * Everything is done in an automatic manner.  
  */
 	public void automaticGame() {
-		KML_Logger.openFile((this.level + 1) + ".kml");
+		
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
 		this.level = levelToPrint;
@@ -204,6 +204,7 @@ public class MyGameGUI implements Runnable {
 		this.drawFruit();
 		this.addAutomaticlRobots();
 		this.drawrobots();
+		KML_Logger.openFile((this.level - 1) + ".kml");
 		this.game.startGame();
 		StdDraw.enableDoubleBuffering();
 		while (this.game.isRunning()) {
@@ -211,11 +212,11 @@ public class MyGameGUI implements Runnable {
 			runGame();
 			List<String> fruits = this.game.getFruits();
 			for (String i : fruits) {
-				KML_Logger.addFruit(this.level-1 + ".kml", i);
+				KML_Logger.addFruit(this.level - 1 + ".kml", i);
 			}
 			List<String> robots = this.game.getRobots();
 			for (String i : robots) {
-				KML_Logger.addRobot(this.level-1 + ".kml", i);
+				KML_Logger.addRobot(this.level - 1 + ".kml", i);
 			}
 		}
 		StdDraw.disableDoubleBuffering();
