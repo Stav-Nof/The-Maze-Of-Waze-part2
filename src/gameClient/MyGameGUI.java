@@ -248,16 +248,14 @@ public class MyGameGUI implements Runnable {
 		for (String i : robots) {
 			robot temp = new robot(i);
 			if (temp.getDest() == -1) {
-				int t = nextNode(temp);
-				this.game.chooseNextEdge(temp.getId(), nextNode(temp));
+				this.game.chooseNextEdge(temp.getId(), nextNode(temp, 0.0));
 			}
 		}
 	}
 
 
-	private int nextNode(robot robot) {
+	private int nextNode(robot robot, double epsilon) {
 		int dest = -1;
-		double epsilon = 0.0;
 		List<String> fruitsS = this.game.getFruits();
 		LinkedList<Fruit> fruits = new LinkedList<Fruit>();
 		for (String string : fruitsS) {
@@ -270,16 +268,12 @@ public class MyGameGUI implements Runnable {
 			for (node_data i : Nodes) {
 				for (node_data j : Nodes) {
 					if (i.getKey() == j.getKey())continue;
-					if ((i.getLocation().x() - epsilon < f.getLocation().x() && j.getLocation().x() + epsilon > f.getLocation().x()) ||
-							(i.getLocation().x() + epsilon > f.getLocation().x() && j.getLocation().x() - epsilon < f.getLocation().x())) {
-						if ((i.getLocation().y() - epsilon < f.getLocation().y() && j.getLocation().y() + epsilon > f.getLocation().y()) ||
-								(i.getLocation().y() + epsilon > f.getLocation().y() && j.getLocation().y() - epsilon < f.getLocation().y())) {
-							fruitIn = this.g.getEdge(i.getKey(), j.getKey());
-							break;
-						}
+					double m = (i.getLocation().y() - j.getLocation().y()) / (i.getLocation().x() - j.getLocation().x());
+					double y = (m*(f.location.x() - i.getLocation().x())) + i.getLocation().y();
+					if (y == f.location.y() + epsilon || y == f.location.y() - epsilon) {
+						fruitIn = this.g.getEdge(i.getKey(), j.getKey());
 					}
 				}
-				if (fruitIn != null) break;
 			}
 			if (fruitIn != null) {
 				if (f.type == -1) {
@@ -332,7 +326,7 @@ public class MyGameGUI implements Runnable {
 				}
 			}
 		}
-		if (dest == -1)return dest;
+		if (dest == -1)return nextNode(robot, epsilon + 0.000000000000001);
 		List<node_data> path =  this.ga.shortestPath(robot.src, dest);
 		return path.get(1).getKey();
 	}
