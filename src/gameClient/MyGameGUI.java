@@ -357,7 +357,6 @@ public class MyGameGUI implements Runnable {
 
 
 	public void addAutomaticlRobots() {		
-		double epsilon = 0.0000000001;			//TODO
 		List<String> fruitsString = this.game.getFruits();
 		LinkedList<Fruit> fruits = new LinkedList<Fruit>();
 		for (String string : fruitsString) {
@@ -368,34 +367,33 @@ public class MyGameGUI implements Runnable {
 			Fruit max = null;
 			for (Fruit fruit : fruits) {
 				if (max == null)max = fruit;
-				else if(max.value < fruit.value);
-				max = fruit;
+				else if(max.value < fruit.value) {
+					max = fruit;
+				}
 			}
 			Collection<node_data> Nodes = this.g.getV();
 			edge_data fruitIn = null;
 			for (node_data i : Nodes) {
 				for (node_data j : Nodes) {
 					if (i.getKey() == j.getKey())continue;
-					if ((i.getLocation().x() - epsilon < max.getLocation().x() && j.getLocation().x() + epsilon > max.getLocation().x()) ||
-							(i.getLocation().x() + epsilon > max.getLocation().x() && j.getLocation().x() - epsilon < max.getLocation().x())) {
-						if ((i.getLocation().y() - epsilon < max.getLocation().y() && j.getLocation().y() + epsilon > max.getLocation().y()) ||
-								(i.getLocation().y() + epsilon > max.getLocation().y() && j.getLocation().y() - epsilon < max.getLocation().y())) {
-							fruitIn = this.g.getEdge(i.getKey(), j.getKey());
-							if (fruitIn != null)break;
-						}
+					double m = (i.getLocation().y() - j.getLocation().y()) / (i.getLocation().x() - j.getLocation().x());
+					double y = (m*(max.location.x() - i.getLocation().x())) + i.getLocation().y();							
+					if (max.location.y() == y) {
+						fruitIn = this.g.getEdge(i.getKey(), j.getKey());
+						break;
 					}
 				}
 				if (fruitIn != null)break;
 			}
 			double srcY = this.g.getNode(fruitIn.getSrc()).getLocation().y();
 			double destY = this.g.getNode(fruitIn.getDest()).getLocation().y();
-			if (max.type == -1) {
+			if (max.type == 1) {
 				if (srcY > destY) this.game.addRobot(fruitIn.getSrc());
-				if (srcY < destY) this.game.addRobot(fruitIn.getDest());
+				else this.game.addRobot(fruitIn.getDest());
 			}
 			else {
 				if (srcY < destY) this.game.addRobot(fruitIn.getSrc());
-				if (srcY > destY) this.game.addRobot(fruitIn.getDest());
+				else this.game.addRobot(fruitIn.getDest());
 			}
 			fruits.remove(max);
 		}
