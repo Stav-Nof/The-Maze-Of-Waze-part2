@@ -10,7 +10,10 @@ import gameUtils.Fruit;
 import gameUtils.robot;
 
 public class KML_Logger {
-
+	
+/*
+ * Open the file from a given string.
+ */
 	public static void openFile(String file_Name) {
 		try {
 			PrintWriter pw = new PrintWriter(new File(file_Name));
@@ -45,7 +48,9 @@ public class KML_Logger {
 		}
 
 	}
-
+/*
+ * Add fruit from a given file name to the kml file
+ */
 	public static void addFruit(String file_Name, String fruit) {
 		Fruit temp = new Fruit(fruit);
 		StringBuilder sb = new StringBuilder();
@@ -66,7 +71,9 @@ public class KML_Logger {
 			e.printStackTrace();
 		}
 	}
-
+/*
+ * Add a robot from a fiven file name to the kml file.
+ */
 	public static void addRobot(String file_Name, String robot) {
 		robot temp = new robot(robot);
 		StringBuilder sb = new StringBuilder();
@@ -88,7 +95,9 @@ public class KML_Logger {
 		}
 	}
 
-
+/*
+ * Closes the kml file by a given file name.
+ */
 	public static void closeFile(String file_Name) {
 		String end = "</Document>\n</kml>";
 		try {
