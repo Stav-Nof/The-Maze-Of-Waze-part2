@@ -3,17 +3,23 @@ package gameClient;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import com.google.gson.Gson;
 import Server.Game_Server;
 import Server.game_service;
+import algorithms.Graph_Algo;
 import dataStructure.DGraph;
+import dataStructure.EdgeData;
 import dataStructure.edge_data;
 import dataStructure.node_data;
 import gameUtils.Fruit;
 import gameUtils.robot;
+import oop_dataStructure.oop_edge_data;
+import oop_dataStructure.oop_graph;
 import utils.Point3D;
 import utils.StdDraw;
 
@@ -24,6 +30,7 @@ public class MyGameGUI implements Runnable {
 	GameServer GameServer;
 	int level;
 	int thread;
+	Graph_Algo ga;
 	public String type;
 
 	public MyGameGUI() {
@@ -87,6 +94,7 @@ public class MyGameGUI implements Runnable {
 	private void drawFruit() {
 		List<String> Fruit = this.game.getFruits();
 		for (String i : Fruit) {
+			System.out.println(i);
 			Fruit temp = new Fruit(i);
 			StdDraw.picture(temp.getLocation().x(), temp.getLocation().y(), temp.getImage(), 0.0008, 0.0008);
 		}
@@ -133,6 +141,7 @@ public class MyGameGUI implements Runnable {
 		game = Game_Server.getServer(this.level-1);
 		this.g = new DGraph();
 		this.g.init(this.game.getGraph());
+		this.ga = new Graph_Algo(this.g);
 		this.drawGraph();
 		this.drawFruit();
 		this.addManualRobots();
@@ -146,8 +155,8 @@ public class MyGameGUI implements Runnable {
 		StdDraw.clear();
 		end();
 	}
-	
-	
+
+
 	public void automaticGame() {
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
@@ -158,20 +167,20 @@ public class MyGameGUI implements Runnable {
 		game = Game_Server.getServer(this.level-1);
 		this.g = new DGraph();
 		this.g.init(this.game.getGraph());
+		this.ga = new Graph_Algo(this.g);
 		this.drawGraph();
 		this.drawFruit();
-		
-		
-//		this.addManualRobots();
-//		this.game.startGame();
-//		StdDraw.enableDoubleBuffering();
-//		while (this.game.isRunning()) {
-//			startGameManual();
-//			runGame();
-//		}
-//		StdDraw.disableDoubleBuffering();
-//		StdDraw.clear();
-//		end();
+		this.addAutomaticlRobots();
+		this.drawrobots();
+		this.game.startGame();
+		StdDraw.enableDoubleBuffering();
+		while (this.game.isRunning()) {
+			startGameautomatic();
+			runGame();
+		}
+		StdDraw.disableDoubleBuffering();
+		StdDraw.clear();
+		end();
 	}
 
 
@@ -221,7 +230,6 @@ public class MyGameGUI implements Runnable {
 		List<String> robots = this.game.move();
 		for (String i : robots) {
 			robot temp = new robot(i);
-			System.out.println(i);
 			if (temp.getDest() == -1) {
 				String robotDes = JOptionPane.showInputDialog(new JFrame(),"select a node to go to\nrobot id: " + temp.id + " corent node: " + temp.src, null);
 				int des = -1;
@@ -233,6 +241,102 @@ public class MyGameGUI implements Runnable {
 			}
 		}
 	}
+
+
+	public void startGameautomatic() {
+		List<String> robots = this.game.move();
+		for (String i : robots) {
+			robot temp = new robot(i);
+			if (temp.getDest() == -1) {
+				int t = nextNode(temp);
+				this.game.chooseNextEdge(temp.getId(), nextNode(temp));
+			}
+		}
+	}
+
+
+	private int nextNode(robot robot) {
+		int dest = -1;
+		double epsilon = 0.0;
+		List<String> fruitsS = this.game.getFruits();
+		LinkedList<Fruit> fruits = new LinkedList<Fruit>();
+		for (String string : fruitsS) {
+			fruits.add(new Fruit(string));
+		}
+		Collection<node_data> Nodes = this.g.getV();
+		double distance = Double.POSITIVE_INFINITY;
+		edge_data fruitIn = null;
+		for (Fruit f : fruits) {
+			for (node_data i : Nodes) {
+				for (node_data j : Nodes) {
+					if (i.getKey() == j.getKey())continue;
+					if ((i.getLocation().x() - epsilon < f.getLocation().x() && j.getLocation().x() + epsilon > f.getLocation().x()) ||
+							(i.getLocation().x() + epsilon > f.getLocation().x() && j.getLocation().x() - epsilon < f.getLocation().x())) {
+						if ((i.getLocation().y() - epsilon < f.getLocation().y() && j.getLocation().y() + epsilon > f.getLocation().y()) ||
+								(i.getLocation().y() + epsilon > f.getLocation().y() && j.getLocation().y() - epsilon < f.getLocation().y())) {
+							fruitIn = this.g.getEdge(i.getKey(), j.getKey());
+							break;
+						}
+					}
+				}
+				if (fruitIn != null) break;
+			}
+			if (fruitIn != null) {
+				if (f.type == -1) {
+					double srcY = this.g.getNode(fruitIn.getSrc()).getLocation().y();
+					double destY = this.g.getNode(fruitIn.getDest()).getLocation().y();
+					if (srcY > destY) {
+						double tempDistance = this.ga.shortestPathDist(robot.src, fruitIn.getSrc());
+						if (tempDistance < distance) {
+							distance = tempDistance;
+							dest = fruitIn.getSrc();
+							if (dest == robot.src) {
+								dest = fruitIn.getDest();
+							}
+						}
+					}
+					else {
+						double tempDistance = this.ga.shortestPathDist(robot.src, fruitIn.getDest());
+						if (tempDistance < distance) {
+							distance = tempDistance;
+							dest = fruitIn.getDest();
+							if (dest == robot.src) {
+								dest = fruitIn.getSrc();
+							}
+						}
+					}
+				}
+				else {
+					double srcY = this.g.getNode(fruitIn.getSrc()).getLocation().y();
+					double destY = this.g.getNode(fruitIn.getDest()).getLocation().y();
+					if (srcY < destY) {
+						double tempDistance = this.ga.shortestPathDist(robot.src, fruitIn.getSrc());
+						if (tempDistance < distance) {
+							distance = tempDistance;
+							dest = fruitIn.getSrc();
+							if (dest == robot.src) {
+								dest = fruitIn.getDest();
+							}
+						}
+					}
+					else {
+						double tempDistance = this.ga.shortestPathDist(robot.src, fruitIn.getDest());
+						if (tempDistance < distance) {
+							distance = tempDistance;
+							dest = fruitIn.getDest();
+							if (dest == robot.src) {
+								dest = fruitIn.getSrc();
+							}
+						}
+					}
+				}
+			}
+		}
+		if (dest == -1)return dest;
+		List<node_data> path =  this.ga.shortestPath(robot.src, dest);
+		return path.get(1).getKey();
+	}
+
 
 
 	public void runGame() {
@@ -256,10 +360,51 @@ public class MyGameGUI implements Runnable {
 		StdDraw.textRight(((StdDraw.xmax + StdDraw.xmin) / 2), ((StdDraw.ymax + StdDraw.ymin) / 2) + 0.001, "game end");
 		StdDraw.textRight(((StdDraw.xmax + StdDraw.xmin) / 2), ((StdDraw.ymax + StdDraw.ymin) / 2), "your points: " + points);
 	}
-	
-	
-	public void addAutomaticlRobots() {
-		
+
+
+	public void addAutomaticlRobots() {		
+		double epsilon = 0.0000000001;			//TODO
+		List<String> fruitsString = this.game.getFruits();
+		LinkedList<Fruit> fruits = new LinkedList<Fruit>();
+		for (String string : fruitsString) {
+			fruits.add(new Fruit(string));
+		}
+		int x = 0;
+		for (; x < this.robots; x++) {
+			Fruit max = null;
+			for (Fruit fruit : fruits) {
+				if (max == null)max = fruit;
+				else if(max.value < fruit.value);
+				max = fruit;
+			}
+			Collection<node_data> Nodes = this.g.getV();
+			edge_data fruitIn = null;
+			for (node_data i : Nodes) {
+				for (node_data j : Nodes) {
+					if (i.getKey() == j.getKey())continue;
+					if ((i.getLocation().x() - epsilon < max.getLocation().x() && j.getLocation().x() + epsilon > max.getLocation().x()) ||
+							(i.getLocation().x() + epsilon > max.getLocation().x() && j.getLocation().x() - epsilon < max.getLocation().x())) {
+						if ((i.getLocation().y() - epsilon < max.getLocation().y() && j.getLocation().y() + epsilon > max.getLocation().y()) ||
+								(i.getLocation().y() + epsilon > max.getLocation().y() && j.getLocation().y() - epsilon < max.getLocation().y())) {
+							fruitIn = this.g.getEdge(i.getKey(), j.getKey());
+							if (fruitIn != null)break;
+						}
+					}
+				}
+				if (fruitIn != null)break;
+			}
+			double srcY = this.g.getNode(fruitIn.getSrc()).getLocation().y();
+			double destY = this.g.getNode(fruitIn.getDest()).getLocation().y();
+			if (max.type == -1) {
+				if (srcY > destY) this.game.addRobot(fruitIn.getSrc());
+				if (srcY < destY) this.game.addRobot(fruitIn.getDest());
+			}
+			else {
+				if (srcY < destY) this.game.addRobot(fruitIn.getSrc());
+				if (srcY > destY) this.game.addRobot(fruitIn.getDest());
+			}
+			fruits.remove(max);
+		}
 	}
 
 
