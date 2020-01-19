@@ -11,7 +11,7 @@ It has two data structure from type of hash map that represents the vertices and
 
 - Graph_Algo- A class represents the "regular" Graph Theory algorithms that can be done on a variable graph.
 
--Fruit - A class that represents an Object which is really an image with a position on the graph. After a set of operations on this object, we will be able to see that this "fruit" is moving on the graph.
+- Fruit - A class that represents an Object which is really an image with a position on the graph. After a set of operations on this object, we will be able to see that this "fruit" is moving on the graph.
 
 - Robot- A class that represents an Object which "picks up" the Fruits on the graph. After that a set of operations are applied on it, the robot will be able to move on the graph from a source node to a destination node and its purpose is to find and pick up the fruits on the graph.
 
