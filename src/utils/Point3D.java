@@ -126,7 +126,7 @@ public class Point3D implements Serializable
         if(all) return "[" + _x + "," +_y+","+_z+"]";
         else return "[" + (int)_x + "," + (int)_y+","+(int)_z+"]";
     }
-    public String toFile()  {return _x+" "+_y+" "+_z+" ";}
+    public String toFile()  {return _x+","+_y+","+_z;}
 
     public String toFile1()  {return "Point3D "+_x+" "+_y+" "+_z;}
 

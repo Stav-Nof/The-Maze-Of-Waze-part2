@@ -132,6 +132,7 @@ public class MyGameGUI implements Runnable {
 
 
 	public void manualGame() {
+		
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
 		this.level = levelToPrint;
@@ -150,14 +151,19 @@ public class MyGameGUI implements Runnable {
 		while (this.game.isRunning()) {
 			startGameManual();
 			runGame();
+
+			
+			
 		}
 		StdDraw.disableDoubleBuffering();
 		StdDraw.clear();
 		end();
+		
 	}
 
 
 	public void automaticGame() {
+		KML_Logger.openFile((this.level + 1) + ".kml");
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
 		this.level = levelToPrint;
@@ -177,10 +183,19 @@ public class MyGameGUI implements Runnable {
 		while (this.game.isRunning()) {
 			startGameautomatic();
 			runGame();
+			List<String> fruits = this.game.getFruits();
+			for (String i : fruits) {
+				KML_Logger.addFruit(this.level-1 + ".kml", i);
+			}
+			List<String> robots = this.game.getRobots();
+			for (String i : robots) {
+				KML_Logger.addRobot(this.level-1 + ".kml", i);
+			}
 		}
 		StdDraw.disableDoubleBuffering();
 		StdDraw.clear();
 		end();
+		KML_Logger.closeFile(this.level-1 + ".kml");
 	}
 
 
