@@ -37,4 +37,5 @@ https://www.javatpoint.com/java-jcheckbox
 - DGraphTest & Graph_AlgoTest-Those are JUnit testers that test minor and difficult cases of the four classes methods.
 
 ***Best result for any scenario (auto-play):***
+
 ![](https://i.ibb.co/bHn7DrQ/score-1.png)
