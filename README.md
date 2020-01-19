@@ -16,7 +16,7 @@ It has two data structure from type of hash map that represents the vertices and
 - Robot- A class that represents an Object which "picks up" the Fruits on the graph. After that a set of operations are applied on it, the robot will be able to move on the graph from a source node to a destination node and its purpose is to find and pick up the fruits on the graph.
 
 - MyGameGUI- A class that includes all the methods in order to build the game, that is to say, its graphic interface. Starting from the 
-interface of the window, selecting levels, adding robots, select manual or automatic mode and starting the gam
+interface of the window, selecting levels, adding robots, select manual or automatic mode and starting the game from the server.
 
 - Window- A class represents the graphical user interface.
 
