@@ -1,6 +1,14 @@
 ![](https://i.imgur.com/FJk2Z3V.png)
 
-This project represents the creation of graph and other operation that can be done on it, such as add/remove vertex, check if it is a "connected graph", Finding the shortest path between two vertices and more.
+This repository based on a our previous project: [The-Maze-of-Waze-part1](https://github.com/Stav-Nof/The-Maze-of-Waze).  
+This project represents a game of robots (Pikachu) and pokeballs.
+
+There are two modes of game:
+1. Automatic- you choose a level between 1-24 and the server play the best moves for the robots.
+2. Manual- you choose a level between 1-24 and you move the robots Towards the pokeballs.  
+Note: if you choose any other number, the server will choose random level for you.
+
+All the Pikachu on the graph need to collect the red and blue pokeballs in order to gain as much score and speed as possible.
 
 - Node- A class represents a vertex in the graph defined by an id and has set of operations applicable on a vertex.
 
@@ -21,9 +29,12 @@ interface of the window, selecting levels, adding robots, select manual or autom
 - Window- A class represents the graphical user interface.
 
 Writing this class We used These links:
-https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html,
-https://stackoverflow.com/questions/16995308/can-you-increase-line-thickness-when-using-java-graphics-for-an-applet-i-dont,
-https://stackoverflow.com/questions/8852560/how-to-make-popup-window-in-java,
-https://www.javatpoint.com/java-jcheckbox
+https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html,  
+https://stackoverflow.com/questions/16995308/can-you-increase-line-thickness-when-using-java-graphics-for-an-applet-i-dont,  
+https://stackoverflow.com/questions/8852560/how-to-make-popup-window-in-java,  
+https://www.javatpoint.com/java-jcheckbox  
 
 - DGraphTest & Graph_AlgoTest-Those are JUnit testers that test minor and difficult cases of the four classes methods.
+
+***Best result for any scenario (auto-play):***
+![](https://i.ibb.co/bHn7DrQ/score-1.png)
