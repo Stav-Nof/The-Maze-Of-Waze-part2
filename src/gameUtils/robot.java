@@ -45,17 +45,20 @@ public class robot {
 
 
 
-	public Point3D getLocation() {
+	public Point3D getLocation() { // return the location of the Pikachu as a 3D point
 		return location;
 	}
 
 	public String getImage() {
 		return image;
 	}
-	public int getDest() {
+	public int getDest() { //return the id (key) of the destination vertex (node). 
+							//If there is no destination return -1
 		return dest;
 	}
 
+	//return the id of the robot. 
+	//(sometimes there is more then one Pikachu on the graph).
 	public int getId() {
 		return id;
 	}

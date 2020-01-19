@@ -11,7 +11,7 @@ public class Fruit {
 	public int type;
 
 
-	public Fruit(String json) {
+	public Fruit(String json) { //read from json file
 		json = json.substring(9, json.length()-1);
 		FruitTemp temp = new FruitTemp(json);
 		this.location = new Point3D(temp.pos);
@@ -41,11 +41,11 @@ public class Fruit {
 
 
 
-	public Point3D getLocation() {
+	public Point3D getLocation() { //return the location of the pokeball on the graph. (Point3D).
 		return location;
 	}
 
-	public String getImage() {
+	public String getImage() { //return the image of the red/blue pokeball.
 		return image;
 	}
 }
