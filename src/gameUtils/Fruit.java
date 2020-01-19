@@ -10,7 +10,9 @@ public class Fruit {
 	public double value;
 	public int type;
 
-
+/*
+ * Builds the object fruit from a json String
+ */
 	public Fruit(String json) { //read from json file
 		json = json.substring(9, json.length()-1);
 		FruitTemp temp = new FruitTemp(json);
@@ -24,12 +26,16 @@ public class Fruit {
 			this.image = "Images/up.png";
 		}
 	}
-	
+/*
+ * Inner class
+ */
 	private class FruitTemp {
 		String pos;
 		int type;
 		double value;
-		
+/*
+ * Builds a temporary fruit from a json string.
+ */
 		public FruitTemp(String json) {
 			Gson gson = new Gson();
 			FruitTemp temp = gson.fromJson(json,FruitTemp.class);

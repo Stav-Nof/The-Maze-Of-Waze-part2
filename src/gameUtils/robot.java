@@ -14,6 +14,9 @@ public class robot {
 	public int src;
 	public int points;
 
+	/*
+	 * Constructs the robot from a given json string.
+	 */
 	public robot(String json) {
 		json = json.substring(9, json.length()-1);
 		RobotTemp temp = new RobotTemp(json);
@@ -24,14 +27,18 @@ public class robot {
 		this.src = temp.src;
 		this.points = temp.value;
 	}
-	
+	/*
+	 * Inner class
+	 */
 	private class RobotTemp {
 		String pos;
 		int id;
 		int dest;
 		int src;
 		int value;
-		
+		/*
+		 * Constructor for a temporary robot from json String.
+		 */
 		public RobotTemp(String json) {
 			Gson gson = new Gson();
 			RobotTemp temp = gson.fromJson(json,RobotTemp.class);

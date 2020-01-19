@@ -38,20 +38,31 @@ public class MyGameGUI implements Runnable {
 		openWindow();
 	}
 
-
+/*
+ * returns the level of this game.
+ */
 	public synchronized int getLevel() {
 		return this.level;
 	}
+/*
+ * set the level of this game.
+ */
 	public synchronized void setLevel(int level) {
 		this.level = level;
 	}
 
-
+/*
+ * Sets the size of the Window of the game.
+ */
 	private void openWindow() {
 		StdDraw.setCanvasSize(1000, 500);
 	}
 
-
+/*
+ * This method draws the graph. In more details, this function draws the graph with certain scales 
+ * that we defined in the function, gets the location of each Node , draws them and draws there edges on the Window.
+ * This method also sets colors and all what is linked to graphics and visualization of the graph.
+ */
 	private void drawGraph() {
 		Collection<node_data> nodes = this.g.getV();
 		double maxX = Double.NEGATIVE_INFINITY;
@@ -90,7 +101,9 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * This method gets each Fruit (the string , which is the path to a picture) and draws it on the graph by getting its location and its image.
+ */
 	private void drawFruit() {
 		List<String> Fruit = this.game.getFruits();
 		for (String i : Fruit) {
@@ -100,7 +113,9 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * This method gets each Robot (the string , which is the path to a picture) and draws it on the graph by getting its location and its image.
+ */
 	private void drawrobots() {
 		List<String> robots = this.game.getRobots();
 		for (String i : robots) {
@@ -109,7 +124,9 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * This method make a visualization of the time while the game is running.
+ */
 	public void drawTime() {
 		long time = this.game.timeToEnd();
 		StdDraw.setPenColor(Color.ORANGE);
@@ -118,7 +135,9 @@ public class MyGameGUI implements Runnable {
 		else StdDraw.textRight(StdDraw.xmax-0.0005, StdDraw.ymax-0.0005, "game over");
 	}
 
-
+/*
+ * This method inits the Game from the server.
+ */
 	private void initGameServer(String s) {
 		Gson gson = new Gson();
 		MyGameGUI temp = gson.fromJson(s, MyGameGUI.class);
@@ -130,7 +149,11 @@ public class MyGameGUI implements Runnable {
 		int robots;
 	}
 
-
+/*
+ * This method enables the user to choose which level he wants to play. 
+ * Depending on the level, the graph will be loaded with its fruits and Robots. In this mode, the user can choose from where he wants to move the robots to.
+ * This method will use other methods in order to set everything in place. 
+ */
 	public void manualGame() {
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
@@ -156,7 +179,10 @@ public class MyGameGUI implements Runnable {
 		end();
 	}
 
-
+/*
+ * This method enables the user to choose which level he wants to play but doesn't give him the choice to move the robots. 
+ * Everything is done in an automatic manner.  
+ */
 	public void automaticGame() {
 		int levelToPrint = levelSelect();
 		this.GameServer = new GameServer();
@@ -183,7 +209,10 @@ public class MyGameGUI implements Runnable {
 		end();
 	}
 
-
+/*
+ * Like its name says, this method enables the user to add Robots manually. 
+ * The function allow the user to place the robots on a specific node by giving it's key number.
+ */
 	public boolean addManualRobots() {
 		for (int i = 0; i < this.robots; i++) {
 			final JFrame addManual = new JFrame();
@@ -210,7 +239,9 @@ public class MyGameGUI implements Runnable {
 		return true;
 	}
 
-
+/*
+ * Returns an integer and allows the user to select a specific level from the 24 levels existing.
+ */
 	private int  levelSelect() {
 		String levelS = JOptionPane.showInputDialog("select a level Between 1 and 24\nAny other character for random", null);
 		int level = -1;
@@ -225,7 +256,9 @@ public class MyGameGUI implements Runnable {
 		return level;
 	}
 
-
+/*
+ * This methods is used by the manualGame function above, it enables the user to select a destination node to go to.
+ */
 	public void startGameManual() {
 		List<String> robots = this.game.move();
 		for (String i : robots) {
@@ -242,7 +275,10 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * This methods is used by the automaticGame function above, this function will start the game and every action is done 
+ * automatically : how the robots move, how the fruits are set on the graph ,etc...
+ */
 	public void startGameautomatic() {
 		List<String> robots = this.game.move();
 		for (String i : robots) {
@@ -253,7 +289,9 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * This method calculates to which node each robot has to go to.
+ */
 	private int nextNode(robot robot, double epsilon) {
 		int dest = -1;
 		List<String> fruitsS = this.game.getFruits();
@@ -332,7 +370,9 @@ public class MyGameGUI implements Runnable {
 	}
 
 
-
+/*
+ * Using the StdDraw class and sets the Graph, its timer , robots , fruits and at the end shows the Graphic interface with all its components. 
+ */
 	public void runGame() {
 		this.game.move();
 		StdDraw.clear();
@@ -343,7 +383,9 @@ public class MyGameGUI implements Runnable {
 		StdDraw.show();
 	}
 
-
+/*
+ * When the game ends, this method will show on the screen a "game end message" and how much points were gained during the game.
+ */
 	public void end() {
 		int points = 0;
 		for (String i : this.game.getRobots()) {
@@ -355,7 +397,10 @@ public class MyGameGUI implements Runnable {
 		StdDraw.textRight(((StdDraw.xmax + StdDraw.xmin) / 2), ((StdDraw.ymax + StdDraw.ymin) / 2), "your points: " + points);
 	}
 
-
+/*
+ * This method adds Robots automatically to the graph. It is used in the automaticGame method above. 
+ * Depending on the location of each fruit on the graph, the robot will be set on the graph in order to get the highest score.
+ */
 	public void addAutomaticlRobots() {		
 		double epsilon = 0.0000000001;			//TODO
 		List<String> fruitsString = this.game.getFruits();
@@ -401,7 +446,10 @@ public class MyGameGUI implements Runnable {
 		}
 	}
 
-
+/*
+ * If the selected mode was "manual", the threads in charge will be in action to run the game in manual mode.
+ * If the selected mode was automatic, the game will run through different threads.
+ */
 	@Override
 	public void run() {
 		if (this.type.equals("manual")) manualGame();
